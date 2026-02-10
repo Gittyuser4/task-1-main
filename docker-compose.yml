@@ -29,6 +29,13 @@ services:
       DB_PORT: 5432
     ports:
       - "5000:5000"
+  sonarqube:
+    image: sonarqube:9-community
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    networks:
+      - ci
 
 volumes:
   pgdata:
