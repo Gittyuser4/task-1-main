@@ -2,8 +2,10 @@ pipeline {
     agent any
 
     environment {
-        COMPOSE_DOCKER_CLI_BUILD = '1'
-        DOCKER_BUILDKIT = '1'
+        environment {
+        DB_NAME = 'authdb'
+        DB_USER = 'authuser'
+        DB_PASSWORD = 'authpass'
     }
 
     stages {
