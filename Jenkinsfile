@@ -1,16 +1,16 @@
 pipeline {
   agent any
 
-  tools {
-    sonarRunner  'SonarScanner'
-  }
+  
 
   environment {
     DB_NAME     = 'authdb'
     DB_USER     = 'authuser'
     DB_PASSWORD = 'authpass'
     IMAGE_NAME  = 'task-1-flask'
-    COMPOSE_PROJECT_NAME = "task1-${BUILD_NUMBER}"
+   // COMPOSE_PROJECT_NAME = "task1-${BUILD_NUMBER}"
+    SCANNER_HOME = tool 'SonarScanner'
+
   }
 
   stages {
