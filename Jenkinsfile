@@ -9,6 +9,8 @@ pipeline {
         DB_USER = 'authuser'
         DB_PASSWORD = 'authpass'
         IMAGE_NAME = 'task-1-flask'
+        SCANNER_HOME = tool 'SonarScanner'
+
     }
 
     stages {
@@ -19,19 +21,17 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-          steps {
-            withSonarQubeEnv('SonarQube') {
-              sh '''
-                sonar-scanner \
-                  -Dsonar.projectKey=task-1 \
-                  -Dsonar.sources=. \
-                  -Dsonar.host.url=$SONAR_HOST_URL \
-                  -Dsonar.login=$SONAR_AUTH_TOKEN
-              '''
-    	}
-     }
-}
+          stage('SonarQube Analysis') {
+            steps {
+              withSonarQubeEnv('SonarQube') {
+                sh '''
+                  sonar-scanner \
+                    -Dsonar.projectKey=task-1 \
+                    -Dsonar.sources=.
+                '''
+                }
+            }
+          }
 
 
         stage('Quality Gate') {
