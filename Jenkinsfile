@@ -1,6 +1,9 @@
 pipeline {
     agent any
-
+    
+    tools {
+      sonarScanner 'SonarScanner'
+    }
     environment {
         DB_NAME = 'authdb'
         DB_USER = 'authuser'
@@ -17,17 +20,19 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-		    sh '''
-      			sonar-scanner \
-      			-Dsonar.projectKey=task-1 \
-      			-Dsonar.sources=.
-    			'''
-  		}
+          steps {
+            withSonarQubeEnv('SonarQube') {
+              sh '''
+                sonar-scanner \
+                  -Dsonar.projectKey=task-1 \
+                  -Dsonar.sources=. \
+                  -Dsonar.host.url=$SONAR_HOST_URL \
+                  -Dsonar.login=$SONAR_AUTH_TOKEN
+              '''
+    	}
+     }
+}
 
-            }
-        }
 
         stage('Quality Gate') {
             steps {
