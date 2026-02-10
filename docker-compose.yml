@@ -40,3 +40,6 @@ services:
 volumes:
   pgdata:
 
+networks:
+  ci:
+    driver: bridge
