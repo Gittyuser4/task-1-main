@@ -72,13 +72,13 @@ pipeline {
         }
     }
 
-    post {
-        failure {
-            sh 'docker compose logs || true'
-        }
-        always {
-            sh 'docker ps'
-        }
-    }
+     post {
+       always {
+    	 sh '''
+      	   docker compose down -v || true
+      	   docker system prune -f || true
+    	 '''
+   }
+ }
 }
 
