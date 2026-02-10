@@ -18,13 +18,13 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube-Server') {
+                withSonarQubeEnv('SonarQube') {
 		    sh '''
       			sonar-scanner \
       			-Dsonar.projectKey=task-1 \
       			-Dsonar.sources=.
     			'''
-}
+  		}
 
             }
         }
