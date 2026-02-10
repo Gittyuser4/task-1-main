@@ -21,18 +21,18 @@ pipeline {
       }
     }
 
-    stage('SonarQube Analysis') {
-      steps {
+   stage('SonarQube Analysis') {
+    steps {
         withSonarQubeEnv('SonarQube') {
-          sh '''
-            sonar-scanner \
-              -Dsonar.projectKey=task-1 \
-              -Dsonar.sources=. \
-              -Dsonar.python.version=3
-          '''
+            sh '''
+              $SCANNER_HOME/bin/sonar-scanner \
+                -Dsonar.projectKey=task-1 \
+                -Dsonar.sources=. \
+                -Dsonar.python.version=3
+            '''
         }
-      }
     }
+}
 
     stage('Quality Gate') {
       steps {
