@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        environment {
         DB_NAME = 'authdb'
         DB_USER = 'authuser'
         DB_PASSWORD = 'authpass'
