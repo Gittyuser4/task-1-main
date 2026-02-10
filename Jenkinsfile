@@ -1,47 +1,40 @@
 pipeline {
     agent any
 
-    stages {
+    environment {
+        COMPOSE_DOCKER_CLI_BUILD = '1'
+        DOCKER_BUILDKIT = '1'
+    }
 
+    stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build & Run') {
             steps {
-                script {
-                    sh 'docker build -t login-app:latest .'
-                }
+                sh '''
+                  docker compose down || true
+                  docker compose up --build -d
+                '''
             }
         }
 
-        stage('Stop Existing Container') {
+        stage('Health Check') {
             steps {
-                script {
-                    sh '''
-                    if [ "$(docker ps -q -f name=login-container)" ]; then
-                        docker stop login-container
-                        docker rm login-container
-                    fi
-                    '''
-                }
+                sh '''
+                  sleep 10
+                  curl -f http://localhost:5000
+                '''
             }
         }
+    }
 
-        stage('Run Container') {
-            steps {
-                script {
-                    sh '''
-                    docker run -d \
-                      -p 5000:5000 \
-                      --name login-container \
-                      --env-file .env \
-                      login-app:latest
-                    '''
-                }
-            }
+    post {
+        failure {
+            sh 'docker compose logs'
         }
     }
 }

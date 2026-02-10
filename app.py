@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
+import time
 import psycopg2
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
@@ -17,6 +18,27 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_PORT = os.getenv("DB_PORT", "5432")
 
+
+def wait_for_db():
+    while True:
+        try:
+            conn = psycopg2.connect(
+                host=os.getenv("DB_HOST"),
+                database=os.getenv("DB_NAME"),
+                user=os.getenv("DB_USER"),
+                password=os.getenv("DB_PASSWORD"),
+                port=os.getenv("DB_PORT"),
+            )
+            conn.close()
+            print("Database is ready")
+            break
+        except psycopg2.OperationalError:
+            print("Waiting for database...")
+            time.sleep(2)
+
+
+
+
 def get_db_connection():
     return psycopg2.connect(
         host=DB_HOST,
@@ -25,6 +47,27 @@ def get_db_connection():
         user=DB_USER,
         password=DB_PASSWORD
     )
+
+
+def init_db():
+    conn = psycopg2.connect(
+        host=os.getenv("DB_HOST"),
+        database=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        port=os.getenv("DB_PORT"),
+    )
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            username VARCHAR(100) UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        );
+    """)
+    conn.commit()
+    cur.close()
+    conn.close()
 
 # ---------- UI ROUTE ----------
 @app.route("/")
@@ -84,4 +127,6 @@ def login():
 
 # ---------- RUN ----------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    wait_for_db()
+    init_db()
+    app.run(host="0.0.0.0", port=5000)
