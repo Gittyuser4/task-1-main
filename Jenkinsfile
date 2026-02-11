@@ -42,6 +42,14 @@ pipeline {
                 }
             }
         }
+        stage('Debug Sonar Env') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'env | grep SONAR'
+                }
+            }
+        }
+
 
 
 
