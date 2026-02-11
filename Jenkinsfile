@@ -34,18 +34,18 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                        sh """
-                          ${SONAR_SCANNER} \
+                        sh '''
+                        $SONAR_SCANNER \
                             -Dsonar.projectKey=task-1 \
                             -Dsonar.sources=. \
                             -Dsonar.python.version=3 \
-                            -Dsonar.login=$SONAR_TOKEN \
+                            -Dsonar.token=$SONAR_TOKEN \
                             -Dsonar.host.url=http://localhost:9000
-                        """
+                        '''
                     }
                 }
             }
-        }
+  }
 
         stage('Quality Gate') {
             steps {
