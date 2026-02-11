@@ -17,18 +17,7 @@ pipeline {
             }
         }
 
-        stage('Start SonarQube') {
-            steps {
-                sh '''
-                  docker compose up -d sonarqube
-
-                  echo "Waiting for SonarQube..."
-                  until curl -s http://localhost:9000/api/system/status | grep -q '"status":"UP"'; do
-                    sleep 5
-                  done
-                '''
-            }
-        }
+        
 
         stage('SonarQube Analysis') {
             steps {
