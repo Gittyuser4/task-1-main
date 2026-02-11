@@ -1,7 +1,9 @@
+version: "3.8"
+
 services:
+
   postgres:
     image: postgres:15
-#    container_name: postgres_db
     restart: always
     environment:
       POSTGRES_DB: ${DB_NAME}
@@ -14,9 +16,11 @@ services:
       retries: 5
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - ci
+
   flask:
     build: .
-#    container_name: flask_app
     restart: always
     depends_on:
       postgres:
@@ -29,23 +33,20 @@ services:
       DB_PORT: 5432
     ports:
       - "5000:5000"
-#  sonarqube:
- #   image: sonarqube:9-community
-  #  container_name: sonarqube
-   # ports:
-    #  - "9000:9000"
-    #networks:
-    #  - ci
+    networks:
+      - ci
 
-sonarqube:
-  image: sonarqube:9-community
-  container_name: sonarqube
-  ports:
-    - "9000:9000"
-  volumes:
-    - sonar_data:/opt/sonarqube/data
-    - sonar_extensions:/opt/sonarqube/extensions
-  restart: unless-stopped
+  sonarqube:
+    image: sonarqube:9-community
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonar_data:/opt/sonarqube/data
+      - sonar_extensions:/opt/sonarqube/extensions
+    restart: unless-stopped
+    networks:
+      - ci
 
 volumes:
   sonar_data:
