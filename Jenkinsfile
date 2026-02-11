@@ -33,18 +33,16 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                        sh '''
-                        $SONAR_SCANNER \
-                            -Dsonar.projectKey=task-1 \
-                            -Dsonar.sources=. \
-                            -Dsonar.python.version=3 \
-                            -Dsonar.token=$SONAR_TOKEN \
-                            -Dsonar.host.url=http://localhost:9000
-                        '''
-                    }
+                    sh '''
+                    $SONAR_SCANNER \
+                        -Dsonar.projectKey=task-1 \
+                        -Dsonar.sources=. \
+                        -Dsonar.python.version=3
+                    '''
                 }
             }
+        }
+
   }
 
         stage('Quality Gate') {
