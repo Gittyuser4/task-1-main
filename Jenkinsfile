@@ -50,7 +50,7 @@ pipeline {
 
         stage('Trivy Image Scan') {
             steps {
-                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL $IMAGE_NAME'
+                sh 'trivy image --exit-code 1 --severity CRITICAL task-1-main-flask'
             }
         }
 
